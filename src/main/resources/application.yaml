@@ -1,0 +1,23 @@
+# Spring Properties
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/tododb
+    username: todo
+    password: todo
+  flyway:
+    url: jdbc:postgresql://localhost:5432/tododb
+    user: todo
+    password: todo
+#    baseline-on-migrate: true
+
+springdoc:
+  api-docs:
+    path: "/openapi"
+  swagger-ui:
+    path: "/swagger"
