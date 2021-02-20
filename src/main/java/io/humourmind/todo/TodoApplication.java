@@ -1,9 +1,10 @@
 package io.humourmind.todo;
 
-import java.util.UUID;
-
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.ServerResponse.created;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+
+import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,8 +20,9 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import io.r2dbc.spi.ConnectionFactory;
+import reactor.core.publisher.Mono;
 
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 public class TodoApplication {
 
 	public static void main(String[] args) {
@@ -37,12 +39,11 @@ public class TodoApplication {
 	@Bean
 	RouterFunction<ServerResponse> routeHandler(ITodoService todoService) {
 		return RouterFunctions.route().path("/todo", builder -> builder
-				.GET("/{id}",
-						req -> ok().contentType(MediaType.APPLICATION_JSON)
-								.body(todoService
-										.findById(UUID.fromString(req.pathVariable("id"))),
-										Todo.class))
-				.POST(req -> ok().contentType(MediaType.APPLICATION_JSON)
+				.GET("/{id}", req -> ok().contentType(MediaType.APPLICATION_JSON)
+						.body(todoService.findById(
+								UUID.fromString(req.pathVariable("id"))), Todo.class)
+						.switchIfEmpty(Mono.empty()))
+				.POST(req -> created(null).contentType(MediaType.APPLICATION_JSON)
 						.body(todoService.save(
 								req.body(BodyExtractors.toMono(Todo.class))), Todo.class))
 				.PUT(req -> ok().contentType(MediaType.APPLICATION_JSON)
@@ -50,8 +51,8 @@ public class TodoApplication {
 								req.body(BodyExtractors.toMono(Todo.class))), Todo.class))
 				.DELETE("/{id}",
 						req -> ok().body(
-								todoService
-										.deleteById(UUID.fromString(req.pathVariable("id"))),
+								todoService.deleteById(
+										UUID.fromString(req.pathVariable("id"))),
 								Void.class))
 				.GET(req -> ok().contentType(MediaType.APPLICATION_JSON)
 						.body(todoService.findAllBySort(
