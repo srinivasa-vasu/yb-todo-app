@@ -18,6 +18,25 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	layered {
+		includeLayerTools = true
+	}
+}
+
+bootBuildImage {
+//	imageName = "humourmind/${project.name}:${project.version}"
+	environment = ["BP_JVM_VERSION": "11.0.7", "BPL_JVM_HEAD_ROOM": "5"]
+//	publish = true
+//	environment = ["BP_BOOT_NATIVE_IMAGE": "1", "BP_BOOT_NATIVE_IMAGE_BUILD_ARGUMENTS": "-Dspring.native.remove-yaml-support=true -Dspring.native.remove-jmx-support=true -Dspring.native.remove-spel-support=true -H:TraceClassInitialization=true --initialize-at-build-time=org.springframework.boot.logging"]
+	pullPolicy = "IF_NOT_PRESENT"
+	verboseLogging = true
+	imageName = "harbor.sys.humourmind.com/kna/todo-cnb:1.0"
+//	environment = ["BP_BOOT_NATIVE_IMAGE": "1", "BP_JVM_VERSION": "11"]
+//	builder = "paketobuildpacks/builder:tiny"
+	builder = "humourmind/paketo-java-builder-tiny@sha256:40be20ed070cce98f6cfa3b9b588919502cc5f4f7ee330d19ec28cddf7d985bb"
+}
+
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
