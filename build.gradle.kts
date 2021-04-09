@@ -1,13 +1,14 @@
 import org.springframework.boot.buildpack.platform.build.PullPolicy.*
 
 plugins {
-	id("org.springframework.boot") version "2.4.3"
+	id("org.springframework.boot") version "2.4.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("java")
+	id("org.springframework.experimental.aot") version "0.9.1"
 }
 
 group = "io.humourmind"
-version = "0.0.1-SNAPSHOT"
+version = "1.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 configurations {
@@ -17,6 +18,7 @@ configurations {
 }
 
 repositories {
+	maven { url = uri("https://repo.spring.io/release") }
 	mavenCentral()
 }
 
@@ -27,22 +29,19 @@ tasks.bootJar {
 }
 
 tasks.bootBuildImage {
-	environment = mapOf("BP_JVM_VERSION" to "11.0.7",
-			"BPL_JVM_HEAD_ROOM" to "5")
-//	imageName = "humourmind/${project.name}:${project.version}"
+	environment = mapOf("BP_JVM_VERSION" to "11.0.7")
+//	environment = mapOf("BP_NATIVE_IMAGE" to "true")
+	imageName = "humourmind/kns/${project.name}:${project.version}"
 //	publish = true
-//	environment = listOf("BP_BOOT_NATIVE_IMAGE" = "1", "BP_BOOT_NATIVE_IMAGE_BUILD_ARGUMENTS" = "-Dspring.native.remove-yaml-support=true -Dspring.native.remove-jmx-support=true -Dspring.native.remove-spel-support=true -H =TraceClassInitialization=true --initialize-at-build-time=org.springframework.boot.logging")
 	pullPolicy = IF_NOT_PRESENT
-	isVerboseLogging = true
-	imageName = "harbor.sys.humourmind.com/kna/todo-cnb:1.0"
-//	environment = listOf("BP_BOOT_NATIVE_IMAGE" = "1", "BP_JVM_VERSION" = "11")
+//	isVerboseLogging = true
 //	builder = "paketobuildpacks/builder:tiny"
-	builder = "humourmind/paketo-java-builder-tiny@sha256:40be20ed070cce98f6cfa3b9b588919502cc5f4f7ee330d19ec28cddf7d985bb"
+//	builder = "humourmind/paketo-java-builder-tiny@sha256:40be20ed070cce98f6cfa3b9b588919502cc5f4f7ee330d19ec28cddf7d985bb"
 }
 
 dependencies {
 	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
+//	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")

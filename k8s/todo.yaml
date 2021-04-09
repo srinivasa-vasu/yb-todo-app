@@ -1,0 +1,101 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  labels:
+    type: "todo-api"
+    group: "humourmind"
+  name: "todo"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: "todo-api"
+      group: "humourmind"
+  template:
+    metadata:
+      labels:
+        type: "todo-api"
+        group: "humourmind"
+    spec:
+      terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: init-ds
+          image: busybox:latest
+          command:
+            - '/bin/sh'
+            - '-c'
+            - |
+              while true
+              do
+                rt=$(nc -z -w 1 todo-postgres 5432)
+                if [ $? -eq 0 ]; then
+                  echo "DB is UP"
+                  break
+                fi
+                echo "DB is not yet reachable;sleep for 10s before retry"
+                sleep 5
+              done
+      containers:
+      - env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://todo-postgres:5432/tododb
+        - name: SPRING_FLYWAY_URL
+          value: jdbc:postgresql://todo-postgres:5432/tododb
+        - name: SPRING_R2DBC_URL
+          value: r2dbc:postgresql://todo-postgres:5432/tododb
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
+        image: "humourmind/kns/todo:1.0"
+        imagePullPolicy: "IfNotPresent"
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: "/actuator/health/liveness"
+            port: 8080
+            scheme: "HTTP"
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: "todo"
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "300m"
+          requests:
+            memory: "756Mi"
+            cpu: "50m"
+        ports:
+        - containerPort: 8080
+          name: "web"
+          protocol: "TCP"
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: "/actuator/health/readiness"
+            port: 8080
+            scheme: "HTTP"
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  labels:
+    type: "todo-api"
+    group: "humourmind"
+  name: "todo"
+spec:
+  ports:
+    - name: "web"
+      port: 8080
+      targetPort: 8080
+  selector:
+    type: "todo-api"
+    group: "humourmind"
+  type: "ClusterIP"

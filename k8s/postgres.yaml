@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: todo-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: todo-postgres-srt
+  labels:
+    app: postgres
+type: Opaque
+data:
+  postgresql-password: dG9kbwo=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-postgres
+  template:
+    metadata:
+      labels:
+        app: todo-postgres
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: todo-postgres-pvc
+      containers:
+        - name: postgres
+          image: postgres:13.2
+          env:
+            - name: POSTGRES_USER
+              value: todo
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-postgres-srt
+                  key: postgresql-password
+            - name: POSTGRES_DB
+              value: tododb
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          resources:
+            requests:
+              memory: '300Mi'
+              cpu: '100m'
+            limits:
+              memory: '512Mi'
+              cpu: '300m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-postgres
+spec:
+  selector:
+    app: todo-postgres
+  ports:
+    - port: 5432
