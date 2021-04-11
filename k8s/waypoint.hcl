@@ -1,9 +1,9 @@
-project = "kloudnative"
+project = "todo"
 
 # An application to deploy.
-app "kloudnative" {
+app "todo" {
     labels = {
-        "service" = "kloudnative",
+        "service" = "todo",
         "env"     = "dev"
     }
 
@@ -14,7 +14,7 @@ app "kloudnative" {
         }
         registry {
             use "docker" {
-                image = "humourmind/kloudnative-cnb"
+                image = "humourmind/todo"
                 tag   = "1.0"
 //                local = true
             }
