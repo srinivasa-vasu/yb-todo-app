@@ -29,7 +29,7 @@ tasks.bootJar {
 }
 
 tasks.bootBuildImage {
-	environment = mapOf("BP_JVM_VERSION" to "11.0.7")
+	environment = mapOf("BP_JVM_VERSION" to "11.*")
 //	environment = mapOf("BP_NATIVE_IMAGE" to "true")
 	imageName = "humourmind/kns/${project.name}:${project.version}"
 //	publish = true
