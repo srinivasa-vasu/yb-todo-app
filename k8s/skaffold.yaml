@@ -2,10 +2,10 @@ apiVersion: skaffold/v2beta12
 kind: Config
 build:
   artifacts:
-    - image: humourmind/kns/todo
+    - image: humourmind/todo
       context: ../
       buildpacks:
-        builder: gcr.io/paketo-buildpacks/builder:base
+        builder: paketobuildpacks/builder:base
   tagPolicy:
     envTemplate:
       template: '1.0'

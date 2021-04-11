@@ -48,7 +48,7 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh", "-c", "sleep 10"]
-        image: "humourmind/kns/todo:1.0"
+        image: "humourmind/todo:1.0"
         imagePullPolicy: "IfNotPresent"
         livenessProbe:
           failureThreshold: 3
