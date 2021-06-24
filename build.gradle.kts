@@ -1,7 +1,7 @@
 import org.springframework.boot.buildpack.platform.build.PullPolicy.*
 
 plugins {
-	id("org.springframework.boot") version "2.4.4"
+	id("org.springframework.boot") version "2.5.1"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("java")
 	id("org.springframework.experimental.aot") version "0.9.1"
@@ -48,7 +48,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-	implementation("org.springdoc:springdoc-openapi-webflux-ui:1.5.2")
+	implementation("org.springdoc:springdoc-openapi-webflux-ui:1.5.9")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	runtimeOnly("io.micrometer:micrometer-registry-prometheus")

@@ -6,11 +6,11 @@ management:
 
 spring:
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/tododb
+    url: r2dbc:postgresql://localhost:5433/todo
     username: todo
     password: todo
   flyway:
-    url: jdbc:postgresql://localhost:5432/tododb
+    url: jdbc:postgresql://localhost:5433/todo
     user: todo
     password: todo
 #    baseline-on-migrate: true

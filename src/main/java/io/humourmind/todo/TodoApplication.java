@@ -1,10 +1,13 @@
 package io.humourmind.todo;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.ServerResponse.created;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
 import java.util.UUID;
+
+import io.r2dbc.spi.ConnectionFactory;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
+import reactor.core.publisher.Mono;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,8 +22,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import io.r2dbc.spi.ConnectionFactory;
-import reactor.core.publisher.Mono;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.ServerResponse.created;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @SpringBootApplication(proxyBeanMethods = false)
 public class TodoApplication {
@@ -36,6 +45,12 @@ public class TodoApplication {
 						.bodyValue(new ClassPathResource("static/index.html")));
 	}
 
+	@RouterOperations({@RouterOperation(path = "/todo", beanClass = TodoService.class, beanMethod = "findAllBySort", method = GET),
+			@RouterOperation(path = "/todo/{id}", beanClass = TodoService.class, beanMethod = "findById", method = GET,
+					operation = @Operation(operationId = "findById", parameters = {@Parameter(in = PATH, name = "id", description = "todo-id to find")})),
+			@RouterOperation(path = "/todo", beanClass = TodoService.class, beanMethod = "save", method = {POST, PUT}),
+			@RouterOperation(path = "/todo/{id}", beanClass = TodoService.class, beanMethod = "deleteById", method = DELETE,
+					operation = @Operation(operationId = "deleteById", parameters = {@Parameter(in = PATH, name = "id", description = "todo-id to delete")}))})
 	@Bean
 	RouterFunction<ServerResponse> routeHandler(ITodoService todoService) {
 		return RouterFunctions.route().path("/todo", builder -> builder
