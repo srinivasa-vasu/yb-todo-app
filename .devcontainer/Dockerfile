@@ -1,7 +1,9 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.158.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
-ARG version=focal
+ARG VARIANT=11
+FROM mcr.microsoft.com/vscode/devcontainers/java:${VARIANT}
 
-FROM mcr.microsoft.com/vscode/devcontainers/universal:$version
+ARG INSTALL_GRADLE="true"
+ARG GRADLE_VERSION="7.1"
+RUN if [ "${INSTALL_GRADLE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
 
 USER root
 
@@ -17,7 +19,7 @@ RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-2.7.1.1
     && chmod +x /usr/local/bin/ycqlsh \
     && rm ./yugabyte.tar.gz
 
-USER codespace
+USER vscode
 
 RUN yugabyted start --base_dir=/tmp/ybd1 --listen=127.0.0.1
 

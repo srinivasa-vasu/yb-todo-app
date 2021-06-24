@@ -1,7 +1,14 @@
 {
-  "name": "GitHub Codespaces (Default)",
+  "name": "Java Codespace",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "11",
+      "INSTALL_MAVEN": "false",
+      "INSTALL_GRADLE": "true",
+      "INSTALL_NODE": "false",
+      "NODE_VERSION": "lts/*"
+    }
   },
   "settings": {
     "terminal.integrated.shell.linux": "/bin/bash",
@@ -25,12 +32,14 @@
     "lldb.executable": "/usr/bin/lldb",
     "files.watcherExclude": {
       "**/target/**": true
-    }
+    },
+    "java.home": "/docker-java-home"
   },
-  "remoteUser": "codespace",
+  "forwardPorts": [7000, 9000],
+  "remoteUser": "vscode",
   "overrideCommand": false,
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/home/codespace/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/vscode/workspace",
   "runArgs": [
     "--cap-add=SYS_PTRACE",
     "--security-opt",
@@ -39,6 +48,7 @@
     "--init"
   ],
   "extensions": [
-    "GitHub.vscode-pull-request-github"
+    "GitHub.vscode-pull-request-github",
+    "vscjava.vscode-java-pack"
   ]
 }
