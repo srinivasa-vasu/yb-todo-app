@@ -24,9 +24,9 @@ USER codespace
 RUN echo "CREATE DATABASE todo;" > /usr/local/yugabyte/init-db.sql \
 	&& echo "CREATE USER todo WITH PASSWORD 'todo';" >> /usr/local/yugabyte/init-db.sql \
 	&& echo "GRANT ALL PRIVILEGES ON DATABASE todo TO todo;" >> /usr/local/yugabyte/init-db.sql \
-	&& echo "\\c todo;" >> /usr/local/yugabyte/init-db.sql \
+	&& echo '\\c todo;' >> /usr/local/yugabyte/init-db.sql \
 	&& echo "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" >> /usr/local/yugabyte/init-db.sql
 
 RUN echo "/usr/local/yugabyte/bin/post_install.sh" >> ~/.bashrc
 RUN echo "yugabyted start --base_dir=/usr/local/yugabyte/ybd1 --listen=127.0.0.1" >> ~/.bashrc
-RUN echo "test $? -eq 0 && sleep 0.5;ysqlsh -f /usr/local/yugabyte/init-db.sql || 'YugabyteDB is not running'" >> ~/.bashrc
+RUN echo "test $? -eq 0 && sleep 1;ysqlsh -f /usr/local/yugabyte/init-db.sql || 'YugabyteDB is not running'" >> ~/.bashrc
