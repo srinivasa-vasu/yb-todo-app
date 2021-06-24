@@ -26,8 +26,8 @@ RUN yugabyted start --base_dir=/tmp/ybd1 --listen=127.0.0.1
 
 RUN echo 'CREATE DATABASE todo;' > /tmp/init-db.sql \
 	&& echo 'CREATE USER todo WITH PASSWORD "todo";' >> /tmp/init-db.sql \
-	&& 'GRANT ALL PRIVILEGES ON DATABASE todo TO todo;' >> /tmp/init-db.sql \
-	&& '\c todo;' >> /tmp/init-db.sql \
-	&& 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' >> /tmp/init-db.sql
+	&& echo 'GRANT ALL PRIVILEGES ON DATABASE todo TO todo;' >> /tmp/init-db.sql \
+	&& echo '\c todo;' >> /tmp/init-db.sql \
+	&& echo 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' >> /tmp/init-db.sql
 
 RUN ysqlsh -f /tmp/init-db.sql
