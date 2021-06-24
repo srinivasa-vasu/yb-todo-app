@@ -13,7 +13,6 @@ RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-${YB_VE
 	&& mkdir yugabyte \
     && tar -xvf yugabyte.tar.gz -C yugabyte --strip-components=1 \
     && mv ./yugabyte /usr/local/ \
-    && chown -R $ROLE:$ROLE /usr/local/yugabyte \
     && ln -s /usr/local/yugabyte/bin/yugabyted /usr/local/bin/yugabyted \
     && ln -s /usr/local/yugabyte/bin/ysqlsh /usr/local/bin/ysqlsh \
     && chmod +x /usr/local/bin/yugabyted \
@@ -21,7 +20,8 @@ RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-${YB_VE
     && rm ./yugabyte.tar.gz
 
 RUN mkdir /var/ybp/data \
-	&& chown -R $ROLE:$ROLE /var/ybp/data
+	&& chown -R $ROLE:$ROLE /var/ybp/data \
+	&& chown -R $ROLE:$ROLE /usr/local/yugabyte
 
 USER $ROLE
 
