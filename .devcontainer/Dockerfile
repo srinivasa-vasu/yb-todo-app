@@ -19,7 +19,7 @@ RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-${YB_VE
     && chmod +x /usr/local/bin/ysqlsh \
     && rm ./yugabyte.tar.gz
 
-RUN mkdir /var/ybp/data \
+RUN mkdir -p /var/ybp/data \
 	&& chown -R $ROLE:$ROLE /var/ybp/data \
 	&& chown -R $ROLE:$ROLE /usr/local/yugabyte
 
