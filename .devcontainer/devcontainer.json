@@ -4,7 +4,8 @@
     "dockerfile": "Dockerfile",
     "args": {
       "VERSION": "focal",
-      "YB_VERSION": "2.7.1.1"
+      "YB_VERSION": "2.7.1.1",
+      "ROLE": "codespace"
     }
   },
   "settings": {
@@ -30,9 +31,10 @@
     "files.watcherExclude": {
       "**/target/**": true
     },
-    "java.home": "/docker-java-home"
+    "java.home": "/docker-java-home",
+    "remote.autoForwardPorts": false
   },
-  "forwardPorts": [7000, 9000],
+  "forwardPorts": [7000, 9000, 8080],
   "remoteUser": "codespace",
   "overrideCommand": false,
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
