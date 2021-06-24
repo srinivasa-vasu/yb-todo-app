@@ -1,14 +1,9 @@
 {
-  "name": "Java Codespace",
+  "name": "Yugabyte Codespace",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "VARIANT": "11",
-      "INSTALL_MAVEN": "false",
-      "INSTALL_GRADLE": "true",
-      "INSTALL_NODE": "false",
-      "NODE_VERSION": "lts/*",
-      "GRADLE_VERSION": "7.1",
+      "VERSION": "focal",
       "YB_VERSION": "2.7.1.1"
     }
   },
@@ -38,10 +33,10 @@
     "java.home": "/docker-java-home"
   },
   "forwardPorts": [7000, 9000],
-  "remoteUser": "vscode",
+  "remoteUser": "codespace",
   "overrideCommand": false,
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/home/vscode/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/codespace/workspace",
   "runArgs": [
     "--cap-add=SYS_PTRACE",
     "--security-opt",

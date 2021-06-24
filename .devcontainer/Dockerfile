@@ -1,11 +1,7 @@
-ARG VARIANT="11"
-FROM mcr.microsoft.com/vscode/devcontainers/java:${VARIANT}
+ARG VERSION
+FROM mcr.microsoft.com/vscode/devcontainers/universal:$VERSION
 
-ARG INSTALL_GRADLE="true"
-ARG GRADLE_VERSION="7.1"
-ARG YB_VERSION="2.7.1.1"
-
-RUN if [ "${INSTALL_GRADLE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
+ARG YB_VERSION
 
 USER root
 
@@ -16,20 +12,21 @@ RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-${YB_VE
 	&& mkdir yugabyte \
     && tar -xvf yugabyte.tar.gz -C yugabyte --strip-components=1 \
     && mv ./yugabyte /usr/local/ \
+    && chown -R codespace:codespace /usr/local/yugabyte \
     && ln -s /usr/local/yugabyte/bin/yugabyted /usr/local/bin/yugabyted \
     && ln -s /usr/local/yugabyte/bin/ysqlsh /usr/local/bin/ysqlsh \
     && chmod +x /usr/local/bin/yugabyted \
     && chmod +x /usr/local/bin/ysqlsh \
     && rm ./yugabyte.tar.gz
 
-USER vscode
+USER codespace
 
-RUN yugabyted start --base_dir=/tmp/ybd1 --listen=127.0.0.1
+RUN echo "CREATE DATABASE todo;" > /usr/local/yugabyte/init-db.sql \
+	&& echo "CREATE USER todo WITH PASSWORD 'todo';" >> /usr/local/yugabyte/init-db.sql \
+	&& echo "GRANT ALL PRIVILEGES ON DATABASE todo TO todo;" >> /usr/local/yugabyte/init-db.sql \
+	&& echo "\c todo;" >> /usr/local/yugabyte/init-db.sql \
+	&& echo "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" >> /usr/local/yugabyte/init-db.sql
 
-RUN echo 'CREATE DATABASE todo;' > /tmp/init-db.sql \
-	&& echo 'CREATE USER todo WITH PASSWORD "todo";' >> /tmp/init-db.sql \
-	&& echo 'GRANT ALL PRIVILEGES ON DATABASE todo TO todo;' >> /tmp/init-db.sql \
-	&& echo '\c todo;' >> /tmp/init-db.sql \
-	&& echo 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' >> /tmp/init-db.sql
-
-RUN ysqlsh -f /tmp/init-db.sql
+RUN echo "/usr/local/yugabyte/bin/post_install.sh" >> ~/.bashrc
+RUN echo "yugabyted start --base_dir=/usr/local/yugabyte/ybd1 --listen=127.0.0.1" >> ~/.bashrc
+RUN echo "test $? -eq 0 && sleep 0.5;ysqlsh -f /usr/local/yugabyte/init-db.sql || YugabyteDB is not running" >> ~/.bashrc
