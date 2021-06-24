@@ -7,7 +7,9 @@
       "INSTALL_MAVEN": "false",
       "INSTALL_GRADLE": "true",
       "INSTALL_NODE": "false",
-      "NODE_VERSION": "lts/*"
+      "NODE_VERSION": "lts/*",
+      "GRADLE_VERSION": "7.1",
+      "YB_VERSION": "2.7.1.1"
     }
   },
   "settings": {
