@@ -27,6 +27,6 @@ RUN echo "CREATE DATABASE todo;" > /usr/local/yugabyte/init-db.sql \
 	&& echo '\\c todo;' >> /usr/local/yugabyte/init-db.sql \
 	&& echo "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" >> /usr/local/yugabyte/init-db.sql
 
-RUN echo "/usr/local/yugabyte/bin/post_install.sh" >> ~/.bashrc
+RUN echo "/usr/local/yugabyte/bin/post_install.sh 2>&1" >> ~/.bashrc
 RUN echo "yugabyted start --base_dir=/usr/local/yugabyte/ybd1 --listen=127.0.0.1" >> ~/.bashrc
-RUN echo "test $? -eq 0 && sleep 1;ysqlsh -f /usr/local/yugabyte/init-db.sql || 'YugabyteDB is not running'" >> ~/.bashrc
+RUN echo "[[ ! -f /usr/local/yugabyte/.init-db.sql.completed ]] && ([[ $? -eq 0 ]] && (sleep 1;ysqlsh -f /usr/local/yugabyte/init-db.sql;touch /usr/local/yugabyte/.init-db.sql.completed) || echo 'YugabyteDB is not running!')" >> ~/.bashrc
