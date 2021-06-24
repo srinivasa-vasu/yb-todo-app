@@ -29,4 +29,4 @@ RUN echo 'CREATE DATABASE todo;' > /tmp/init-db.sql \
 	&& '\c todo;' >> /tmp/init-db.sql \
 	&& 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' >> /tmp/init-db.sql
 
-ysqlsh -f /tmp/init-db.sql
+RUN ysqlsh -f /tmp/init-db.sql
