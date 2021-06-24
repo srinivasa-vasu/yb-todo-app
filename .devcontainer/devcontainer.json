@@ -31,8 +31,7 @@
     "files.watcherExclude": {
       "**/target/**": true
     },
-    "java.home": "/docker-java-home",
-    "remote.autoForwardPorts": false
+    "java.home": "/docker-java-home"
   },
   "forwardPorts": [7000, 9000, 8080],
   "remoteUser": "codespace",
