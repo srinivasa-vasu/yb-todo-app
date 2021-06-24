@@ -1,3 +1,8 @@
+ARG VARIANT
+ARG INSTALL_GRADLE
+ARG GRADLE_VERSION
+ARG YB_VERSION
+
 FROM mcr.microsoft.com/vscode/devcontainers/java:${VARIANT}
 
 RUN if [ "${INSTALL_GRADLE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/sdkman/bin/sdkman-init.sh && sdk install gradle \"${GRADLE_VERSION}\""; fi
