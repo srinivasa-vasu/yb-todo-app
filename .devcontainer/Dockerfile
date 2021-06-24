@@ -11,8 +11,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends
 
 RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-2.7.1.1-darwin.tar.gz \
-    && tar -xvf yugabyte.tar.gz yugabyte \
-    && mv -r ./yugabyte /usr/local/ \
+	&& mkdir yugabyte \
+    && tar -xvf yugabyte.tar.gz -C yugabyte --strip-components=1 \
+    && mv ./yugabyte /usr/local/ \
     && ln -s /usr/local/yugabyte/bin/yugabyted /usr/local/bin/yugabyted \
     && ln -s /usr/local/yugabyte/bin/ycqlsh /usr/local/bin/ycqlsh \
     && chmod +x /usr/local/bin/yugabyted \
