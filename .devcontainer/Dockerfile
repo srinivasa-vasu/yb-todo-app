@@ -1,5 +1,5 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.158.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
-ARG version=1-focal
+ARG version=focal
 
 FROM mcr.microsoft.com/vscode/devcontainers/universal:$version
 
