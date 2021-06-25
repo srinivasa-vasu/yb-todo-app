@@ -2,9 +2,16 @@ image:
   file: .gitpodcontainer/Dockerfile
 
 tasks:
-  - name: App Process
+  - name: db-init
+    before: /usr/local/yugabyte/bin/post_install.sh
+  - name: app-build
     init: gradle clean build -x test
-    command: java -jar target/*.jar
+  - name: db-app-start
+    init: |
+      yugabyted start --base_dir=/var/ybdp/ybd1 --listen=127.0.0.1 && \
+      [[ ! -f /var/ybdp/.init-db.sql.completed ]] &&  { for i in {1..5}; do (nc -vz 127.0.0.1 5433 >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f /var/ybdp/init-db.sql; touch /var/ybdp/.init-db.sql.completed; break; } || sleep $i; done } && \
+      [[ ! -f /var/ybdp/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'
+    command: java -jar build/libs/*.jar
   - env:
       name: YB_VERSION
       value: 2.7.1.1
@@ -18,11 +25,11 @@ tasks:
 # exposed ports
 ports:
   - port: 8080
-    onOpen: open-preview
+    onOpen: notify
   - port: 7000
-    onOpen: open-preview
+    onOpen: notify
   - port: 9000
-    onOpen: open-preview
+    onOpen: notify
 
 vscode:
   extensions:

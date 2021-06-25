@@ -5,8 +5,8 @@ ARG ROLE=gitpod
 
 USER root
 
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install netcat --no-install-recommends
+RUN apt-get update && \
+	apt-get -y install netcat --no-install-recommends
 
 RUN curl -sSLo ./yugabyte.tar.gz https://downloads.yugabyte.com/yugabyte-${YB_VERSION}-linux.tar.gz \
 	&& mkdir yugabyte \
@@ -33,9 +33,9 @@ RUN echo "CREATE DATABASE todo;" > $STORE/init-db.sql \
 	&& echo '\\c todo;' >> $STORE/init-db.sql \
 	&& echo "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";" >> $STORE/init-db.sql
 
-RUN echo "/usr/local/yugabyte/bin/post_install.sh 2>&1" >> ~/.bashrc
-RUN echo "yugabyted start --base_dir=$STORE/ybd1 --listen=$LISTEN" >> ~/.bashrc
-RUN echo "[[ ! -f $STORE/.init-db.sql.completed ]] && " \
-	"{ for i in {1..5}; do (nc -vz $LISTEN $PORT >/dev/null 2>&1); [[ \$? -eq 0 ]] && "\
-	"{ ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep \$i; done }" >> ~/.bashrc
-RUN echo "[[ ! -f $STORE/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'"	>> ~/.bashrc
+#RUN echo "/usr/local/yugabyte/bin/post_install.sh 2>&1" >> ~/.bashrc
+#RUN echo "yugabyted start --base_dir=$STORE/ybd1 --listen=$LISTEN" >> ~/.bashrc
+#RUN echo "[[ ! -f $STORE/.init-db.sql.completed ]] && " \
+#	"{ for i in {1..5}; do (nc -vz $LISTEN $PORT >/dev/null 2>&1); [[ \$? -eq 0 ]] && "\
+#	"{ ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep \$i; done }" >> ~/.bashrc
+#RUN echo "[[ ! -f $STORE/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'"	>> ~/.bashrc
