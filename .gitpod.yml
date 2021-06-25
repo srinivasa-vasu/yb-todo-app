@@ -2,9 +2,8 @@ image:
   file: .gitpodcontainer/Dockerfile
 
 tasks:
-  - name: db-init
-    before: /usr/local/yugabyte/bin/post_install.sh
   - name: db-run
+    before: /usr/local/yugabyte/bin/post_install.sh
     init: |
       yugabyted start --base_dir=$STORE/ybd1 --listen=127.0.0.1 && \
       [[ ! -f $STORE/.init-db.sql.completed ]] &&  { for i in {1..5}; do (nc -vz 127.0.0.1 5433 >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep $i; done } && \
@@ -13,14 +12,8 @@ tasks:
     init: gradle clean build -x test
     command: java -jar build/libs/*.jar
   - env:
-      name: YB_VERSION
-      value: 2.7.1.1
-  - env:
-      name: STORE
-      value: /var/ybdp
-  - env:
-      name: ROLE
-      value: gitpod
+      STORE: /var/ybdp
+      ROLE: gitpod
 
 # exposed ports
 ports:
