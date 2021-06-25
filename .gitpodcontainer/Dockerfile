@@ -1,7 +1,7 @@
 FROM gitpod/workspace-full
 
-ARG YB_VERSION
-ARG ROLE
+ARG YB_VERSION=2.7.1.1
+ARG ROLE=gitpod
 
 USER root
 
