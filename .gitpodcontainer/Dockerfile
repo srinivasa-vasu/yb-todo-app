@@ -23,9 +23,10 @@ RUN mkdir -p /var/ybdp \
 	&& chown -R $ROLE:$ROLE /usr/local/yugabyte
 
 USER $ROLE
-ARG STORE=/var/ybdp
-ARG LISTEN=127.0.0.1
-ARG PORT=5433
+
+ENV STORE=/var/ybdp
+ENV LISTEN=127.0.0.1
+ENV PORT=5433
 
 RUN echo "CREATE DATABASE todo;" > $STORE/init-db.sql \
 	&& echo "CREATE USER todo WITH PASSWORD 'todo';" >> $STORE/init-db.sql \
