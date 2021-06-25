@@ -4,20 +4,20 @@ image:
 tasks:
   - name: db-init
     before: /usr/local/yugabyte/bin/post_install.sh
-  - name: app-build
-    init: gradle clean build -x test
-  - name: db-app-start
+  - name: db-run
     init: |
-      yugabyted start --base_dir=/var/ybdp/ybd1 --listen=127.0.0.1 && \
-      [[ ! -f /var/ybdp/.init-db.sql.completed ]] &&  { for i in {1..5}; do (nc -vz 127.0.0.1 5433 >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f /var/ybdp/init-db.sql; touch /var/ybdp/.init-db.sql.completed; break; } || sleep $i; done } && \
-      [[ ! -f /var/ybdp/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'
+      yugabyted start --base_dir=$STORE/ybd1 --listen=127.0.0.1 && \
+      [[ ! -f $STORE/.init-db.sql.completed ]] &&  { for i in {1..5}; do (nc -vz 127.0.0.1 5433 >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep $i; done } && \
+      [[ ! -f $STORE/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'
+  - name: app-run
+    init: gradle clean build -x test
     command: java -jar build/libs/*.jar
   - env:
       name: YB_VERSION
       value: 2.7.1.1
   - env:
-      name: YB_VERSION
-      value: 2.7.1.1
+      name: STORE
+      value: /var/ybdp
   - env:
       name: ROLE
       value: gitpod
@@ -30,6 +30,20 @@ ports:
     onOpen: notify
   - port: 9000
     onOpen: notify
+  - port: 37843
+    onOpen: ignore
+  - port: 7100
+    onOpen: ignore
+  - port: 9100
+    onOpen: ignore
+  - port: 5433
+    onOpen: ignore
+  - port: 13000
+    onOpen: ignore
+  - port: 9042
+    onOpen: ignore
+  - port: 12000
+    onOpen: ignore
 
 vscode:
   extensions:
