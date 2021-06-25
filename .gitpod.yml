@@ -5,15 +5,12 @@ tasks:
   - name: db-run
     before: /usr/local/yugabyte/bin/post_install.sh
     init: |
-      yugabyted start --base_dir=$STORE/ybd1 --listen=127.0.0.1 && \
-      [[ ! -f $STORE/.init-db.sql.completed ]] &&  { for i in {1..5}; do (nc -vz 127.0.0.1 5433 >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep $i; done } && \
+      yugabyted start --base_dir=$STORE/ybd1 --listen=$LISTEN && \
+      [[ ! -f $STORE/.init-db.sql.completed ]] &&  { for i in {1..10}; do (nc -vz $LISTEN $PORT >/dev/null 2>&1); [[ $? -eq 0 ]] &&  { ysqlsh -f $STORE/init-db.sql; touch $STORE/.init-db.sql.completed; break; } || sleep $i; done } && \
       [[ ! -f $STORE/.init-db.sql.completed ]] && echo 'YugabyteDB is not running!'
   - name: app-run
     init: gradle clean build -x test
     command: java -jar build/libs/*.jar
-  - env:
-      key: STORE
-      value: /var/ybdp
 
 # exposed ports
 ports:
