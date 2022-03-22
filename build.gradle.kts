@@ -1,15 +1,15 @@
 import org.springframework.boot.buildpack.platform.build.PullPolicy.*
 
 plugins {
-	id("org.springframework.boot") version "2.5.1"
+	id("org.springframework.boot") version "2.6.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("java")
-	id("org.springframework.experimental.aot") version "0.9.1"
+//	id("org.springframework.experimental.aot") version "0.11.3"
 }
 
 group = "io.humourmind"
 version = "1.0"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
 	compileOnly {
@@ -29,7 +29,7 @@ tasks.bootJar {
 }
 
 tasks.bootBuildImage {
-	environment = mapOf("BP_JVM_VERSION" to "11.*")
+	environment = mapOf("BP_JVM_VERSION" to "14.*")
 //	environment = mapOf("BP_NATIVE_IMAGE" to "true")
 	imageName = "humourmind/kns/${project.name}:${project.version}"
 //	publish = true
