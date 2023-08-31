@@ -1,8 +1,8 @@
 import org.springframework.boot.buildpack.platform.build.PullPolicy.*
 
 plugins {
-	id("org.springframework.boot") version "2.6.4"
-	id("io.spring.dependency-management") version "1.0.11.RELEASE"
+	id("org.springframework.boot") version "3.1.3"
+	id("io.spring.dependency-management") version "1.1.3"
 	id("java")
 //	id("org.springframework.experimental.aot") version "0.11.3"
 }
@@ -29,7 +29,7 @@ tasks.bootJar {
 }
 
 tasks.bootBuildImage {
-	environment = mapOf("BP_JVM_VERSION" to "14.*")
+	environment = mapOf("BP_JVM_VERSION" to "17.*")
 //	environment = mapOf("BP_NATIVE_IMAGE" to "true")
 	imageName = "humourmind/kns/${project.name}:${project.version}"
 //	publish = true
@@ -44,19 +44,23 @@ dependencies {
 //	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
 
+//	implementation("org.springframework.boot:spring-boot-starter-data-cassandra")
+
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-	implementation("org.springdoc:springdoc-openapi-webflux-ui:1.5.9")
+	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0")
+	implementation("io.github.classgraph:classgraph:4.8.162")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-	runtimeOnly("io.r2dbc:r2dbc-postgresql")
+	runtimeOnly("org.postgresql:r2dbc-postgresql")
 	runtimeOnly("org.postgresql:postgresql")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
+
 }
 
 tasks.withType<Test> {
